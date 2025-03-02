@@ -25,6 +25,9 @@ fn mod_pow(mut base: u128, mut exp: u128, modulus: u128) -> u128 {
 }
 
 fn pollards_rho(n: u128) -> u128 {
+    if n == 1 {
+        return 1;
+    }
     if n % 2 == 0 {
         return 2;
     }
@@ -36,37 +39,35 @@ fn pollards_rho(n: u128) -> u128 {
     }
 
     let mut rng = rand::rng();
-    let mut x = 2;
-    let mut y = 2;
-    let mut c = rng.random_range(1..n);
-    let mut d = 1;
-
-    while d == 1 {
-        x = (mod_pow(x, 2, n) + c) % n;
-        y = (mod_pow(y, 2, n) + c) % n;
-        y = (mod_pow(y, 2, n) + c) % n;
-        d = gcd((x as i128 - y as i128).abs() as u128, n);
+    loop {
+        let mut x = 2;
+        let mut y = 2;
+        let mut c = rng.random_range(1..n);
+        let mut d = 1;
+    
+        while d == 1 {
+            x = (mod_pow(x, 2, n) + c) % n;
+            y = (mod_pow(y, 2, n) + c) % n;
+            y = (mod_pow(y, 2, n) + c) % n;
+            d = gcd((x as i128 - y as i128).abs() as u128, n);
+        }
+    
+        if d !=n && d != 1 {
+            return d;
+        }
     }
 
-    if d == n {
-        pollards_rho(n)
-    } else {
-        d
-    }
 }
 
 pub fn find_max_prime_factor(num: u128) -> u128 {
     let mut largest_factor = 1;
     let mut n = num;
-    // 处理小质因数
-    for &p in &[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43] {
+    for &p in &[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37] {
         while n % p == 0 {
             largest_factor = p;
             n /= p;
         }
     }
-
-    // 使用 Pollard's Rho 分解大质因数
     while n > 1 {
         if is_prime(n) {
             largest_factor = n;
@@ -81,21 +82,40 @@ pub fn find_max_prime_factor(num: u128) -> u128 {
 }
 
 fn is_prime(n: u128) -> bool {
-    if n <= 1 {
+    if n < 2 {
         return false;
     }
-    if n <= 3 {
-        return true;
+    let small_primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
+    for &p in &small_primes {
+        if n % p == 0 {
+            return n == p;
+        }
     }
-    if n % 2 == 0 || n % 3 == 0 {
-        return false;
+    let mut d = n - 1;
+    let mut s = 0;
+    while d % 2 == 0 {
+        d /= 2;
+        s += 1;
     }
-    let mut i = 5;
-    while i * i <= n {
-        if n % i == 0 || n % (i + 2) == 0 {
+    for &a in &small_primes {
+        if a >= n {
+            continue;
+        }
+        let mut x = mod_pow(a, d, n);
+        if x == 1 || x == n - 1 {
+            continue;
+        }
+        let mut is_composite = true;
+        for _ in 0..s - 1 {
+            x = mod_pow(x, 2, n);
+            if x == n - 1 {
+                is_composite = false;
+                break;
+            }
+        }
+        if is_composite {
             return false;
         }
-        i += 6;
     }
-    return true;
+    true
 }

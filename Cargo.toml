@@ -13,5 +13,5 @@ log = "0.4"
 log4rs = "1.0"
 
 [[test]]
-path = "exercises/hard/solutiont2/src/tests.rs"
-name = "hard2"
+path = "exercises/hard/solutiont5/src/tests.rs"
+name = "hard5"

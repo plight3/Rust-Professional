@@ -137,25 +137,25 @@
     },
     {
       "name": "solutiont3",
-      "result": false,
-      "score": 0
+      "result": true,
+      "score": 10
     },
     {
       "name": "solutiont4",
-      "result": false,
-      "score": 0
+      "result": true,
+      "score": 10
     },
     {
       "name": "solutiont5",
-      "result": false,
-      "score": 0
+      "result": true,
+      "score": 10
     }
   ],
   "statistics": {
     "total_exercises": 30,
-    "total_successes": 26,
-    "total_failures": 4,
-    "total_score": 60,
-    "total_time": 40
+    "total_successes": 29,
+    "total_failures": 1,
+    "total_score": 90,
+    "total_time": 38
   }
 }
