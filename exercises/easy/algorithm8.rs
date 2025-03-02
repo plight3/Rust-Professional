@@ -67,15 +67,41 @@ impl<T> myStack<T> {
         }
     }
     pub fn push(&mut self, elem: T) {
-        //TODO
+        let insert_q;
+        if !self.q1.is_empty() {
+            insert_q = &mut self.q1;
+        } else {
+            insert_q = &mut self.q2;
+        }
+        insert_q.enqueue(elem);
     }
     pub fn pop(&mut self) -> Result<T, &str> {
-        //TODO
-		Err("Stack is empty")
+        if self.q1.is_empty() && self.q2.is_empty() {
+            return Err("Stack is empty");
+        }
+        let insert_q;
+        let delete_q;
+        if self.q1.is_empty() {
+            insert_q = &mut self.q2;
+            delete_q = &mut self.q1;
+        } else {
+            insert_q = &mut self.q1;
+            delete_q = &mut self.q2;
+        }
+        while insert_q.size() > 1 {
+            delete_q.enqueue(insert_q.dequeue().unwrap());
+        }
+        let ret = insert_q.dequeue();
+        match ret {
+            Ok(_) => return ret,
+            Err(_) => return Err("Stack is empty")
+        }
     }
     pub fn is_empty(&self) -> bool {
-		//TODO
-        true
+		if self.q1.is_empty() && self.q2.is_empty() {
+            return true;
+        }
+        return false;
     }
 }
 

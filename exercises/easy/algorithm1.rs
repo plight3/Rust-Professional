@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T: std::cmp::PartialOrd+Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T: std::cmp::PartialOrd+Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -71,16 +71,43 @@ impl<T> LinkedList<T> {
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut list_c = Self::new();
+        let mut i= 0;
+        let mut j = 0;
+        let mut list_a_ptr = Box::new(list_a);
+        let mut list_b_ptr = Box::new(list_b);
+        while i < list_a_ptr.length && j < list_b_ptr.length {
+            let node_val_a = list_a_ptr.get_ith_node(list_a_ptr.start, i as i32).unwrap();
+            let node_val_b = list_b_ptr.get_ith_node(list_b_ptr.start, j as i32).unwrap();
+            if *node_val_a > *node_val_b {
+                list_c.add((*node_val_b).clone());
+                j += 1;
+            } else {
+                list_c.add((*node_val_a).clone());
+                i += 1;
+            }
         }
+        while i < list_a_ptr.length {
+            let node_val_cur = list_a_ptr.get_ith_node(list_a_ptr.start, i as i32).unwrap();
+            list_c.add((*node_val_cur).clone());
+            i += 1;
+        }
+        while j < list_b_ptr.length {
+            let node_val_cur = list_b_ptr.get_ith_node(list_b_ptr.start, j as i32).unwrap();
+            list_c.add((*node_val_cur).clone());
+            j += 1;
+        }
+        list_c
+		//TODO
+		// Self {
+        //     length: 0,
+        //     start: None,
+        //     end: None,
+        // }
 	}
 }
 
-impl<T> Display for LinkedList<T>
+impl<T: std::cmp::PartialOrd> Display for LinkedList<T>
 where
     T: Display,
 {

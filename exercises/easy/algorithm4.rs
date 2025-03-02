@@ -41,7 +41,7 @@ where
 
 impl<T> BinarySearchTree<T>
 where
-    T: Ord,
+    T: Ord+Copy
 {
 
     fn new() -> Self {
@@ -51,12 +51,43 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        if self.root.is_none() {
+            self.root = Some(Box::new(TreeNode::new(value)));
+            return;
+        }
+
+        let mut cur_node = &mut self.root;
+        while let Some(ref mut node) = cur_node {
+            if value < node.value {
+                cur_node = &mut node.left;
+            } else if value > node.value {
+                cur_node = &mut node.right;
+            } else {
+                return;
+            }
+        }
+
+        // 此时 cur_node 是某个节点的 left 或 right 字段的可变引用
+        // 直接将新节点赋值给它
+        *cur_node = Some(Box::new(TreeNode::new(value)));
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
-        true
+        let mut cur_node = &self.root;
+        while let Some(cur_node_ptr) = cur_node {
+            if value == cur_node_ptr.value {
+                return true;
+            } else {
+                if value < cur_node_ptr.value {
+                    cur_node = &cur_node_ptr.left;
+                } else {
+                    cur_node = &cur_node_ptr.right;
+                }
+            }
+        }
+        return false;
     }
 }
 
@@ -122,5 +153,3 @@ mod tests {
         }
     }
 }    
-
-

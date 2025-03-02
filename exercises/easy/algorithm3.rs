@@ -5,8 +5,18 @@
 */
 
 
-fn sort<T>(array: &mut [T]){
+fn sort<T: std::cmp::PartialOrd+Copy>(array: &mut [T]){
 	//TODO
+    let mut temp;
+    for i in 0..array.len() {
+        for j in (i+1)..array.len() {
+            if array[j] < array[i] {
+                temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
+    }
 }
 #[cfg(test)]
 mod tests {

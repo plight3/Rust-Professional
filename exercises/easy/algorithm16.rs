@@ -8,11 +8,43 @@
 
     Hint: Consider rotating the matrix layer by layer, starting from the outermost layer and working your way inward.
 */
-
+use std::cmp::max;
 use std::fmt::{self, Display, Formatter};
 
 pub fn rotate_matrix_90_degrees(matrix: &mut Vec<Vec<i32>>) {
-    // TODO: Implement the logic to rotate the matrix 90 degrees in place
+    let row = matrix.len();
+    let col = matrix[0].len();
+    if row > col {
+        for i in 0..row {
+            matrix[i].append(&mut vec![0; row-col]);
+        }
+    } else if row < col {
+        for _ in 0..(col-row) {
+            matrix.push(vec![0; col]);
+        }
+    }
+    let usize_matrix = max(row, col);
+    for i in 0..usize_matrix {
+        for j in i+1..usize_matrix {
+            (matrix[i][j], matrix[j][i]) = (matrix[j][i], matrix[i][j]);
+        }
+    }
+    for i in 0..usize_matrix {
+        matrix[i].reverse();
+    }
+    if row > col {
+        for _ in 0..row-col {
+            matrix.pop();
+        }
+    } else if col > row {
+        for i in 0..row {
+            for _ in 0..col-row {
+                matrix[i].remove(0);
+            }
+
+        }
+    }
+
 }
 
 #[cfg(test)]

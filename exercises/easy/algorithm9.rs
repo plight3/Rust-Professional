@@ -37,7 +37,18 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value);
+        self.count += 1;
+        let mut cur_idx = self.count;
+        while cur_idx != 1 {
+            let parent_idx = self.parent_idx(cur_idx);
+            if (self.comparator)(&self.items[cur_idx], &self.items[parent_idx]) {
+                self.items.swap(cur_idx, parent_idx);
+                cur_idx = parent_idx;
+                continue;
+            }
+            break;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -84,8 +95,42 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if !self.is_empty() {
+            self.items.swap(1, self.count);
+            let item = self.items.remove(self.count);
+            self.count -= 1;
+            if self.count > 1 {
+                let mut cur_idx = 1;
+                while self.children_present(cur_idx) {
+                    let left_idx = self.left_child_idx(cur_idx);
+                    let right_idx = self.right_child_idx(cur_idx);
+                    if right_idx > self.count {
+                        if !(self.comparator)(&self.items[cur_idx], &self.items[left_idx]) {
+                            self.items.swap(cur_idx, left_idx);
+                            cur_idx = left_idx;
+                        }
+                        break;
+                    } else {
+                        if !(self.comparator)(&self.items[cur_idx], &self.items[left_idx]) ||
+                         !(self.comparator)(&self.items[cur_idx], &self.items[right_idx]) {
+                            if (self.comparator)(&self.items[left_idx], &self.items[right_idx]){
+                                self.items.swap(cur_idx, left_idx);
+                                cur_idx = left_idx;
+                            }
+                            else {
+                                self.items.swap(cur_idx, right_idx);
+                                cur_idx = right_idx;
+                            }
+                         }
+                         break;
+                    }
+
+                }
+            }
+            Some(item)
+        } else {
+            None
+        }
     }
 }
 

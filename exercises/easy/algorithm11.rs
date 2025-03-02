@@ -11,11 +11,16 @@
     Hint: Use the sum of the first `n` numbers and subtract the sum of the array elements to find the missing number.
 */
 
-use std::fmt::{self, Display, Formatter};
+use std::{collections::HashSet, fmt::{self, Display, Formatter}};
 
 pub fn find_missing_number(nums: Vec<i32>) -> i32 {
-    // TODO: Implement the logic to find the missing number
-    0 // Placeholder return value
+    let mut cur_sum = 0;
+    let mut all_sum = 0i32;
+    for i in 0..nums.len() {
+        cur_sum += nums[i];
+        all_sum += (i as i32)+1;
+    }
+    return all_sum + nums.len() as i32 + 1 - cur_sum;
 }
 
 #[cfg(test)]

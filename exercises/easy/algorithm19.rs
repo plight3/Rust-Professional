@@ -12,8 +12,15 @@
 use std::fmt::{self, Display, Formatter};
 
 pub fn fib(n: i32) -> i32 {
-    // TODO: Implement the logic to calculate the nth Fibonacci number using matrix exponentiation
-    0 // Placeholder return value
+    let mut vec_fib = vec![0;n as usize+1];
+    vec_fib[0] = 0;
+    if n >= 1 {
+        vec_fib[1] = 1;
+        for i in 2..=n {
+            vec_fib[i as usize] = vec_fib[i as usize-1] + vec_fib[i as usize-2];
+        }
+    }
+    return vec_fib[n as usize];
 }
 
 #[cfg(test)]

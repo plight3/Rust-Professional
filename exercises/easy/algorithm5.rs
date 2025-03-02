@@ -5,6 +5,7 @@
 
 
 use std::collections::VecDeque;
+use std::collections::HashSet;
 
 // Define a graph
 struct Graph {
@@ -29,8 +30,21 @@ impl Graph {
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
         
 		//TODO
-
+        let mut visited_hashset = HashSet::<usize>::new();
+        let mut visit_queue = vec![start];
         let mut visit_order = vec![];
+        
+        while !visit_queue.is_empty() {
+            let cur_node = visit_queue[0];
+            visit_queue.remove(0);
+            if !visited_hashset.contains(&cur_node) {
+                visit_order.push(cur_node);
+                visited_hashset.insert(cur_node);
+                for &adj_node in self.adj[cur_node].iter() {
+                    visit_queue.push(adj_node);
+                }
+            }
+        }
         visit_order
     }
 }
@@ -84,4 +98,3 @@ mod tests {
         assert_eq!(visited_order, vec![0]);
     }
 }
-

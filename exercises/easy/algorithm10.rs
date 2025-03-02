@@ -30,6 +30,16 @@ impl Graph for UndirectedGraph {
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
         //TODO
+        if !self.adjacency_table.contains_key(edge.0) {
+            self.adjacency_table.insert(String::from(edge.0), Vec::<(String, i32)>::new());
+        }
+        if !self.adjacency_table.contains_key(edge.1) {
+            self.adjacency_table.insert(String::from(edge.1), Vec::<(String, i32)>::new());
+        }
+        let node_adj = self.adjacency_table.get_mut(edge.0).unwrap();
+        node_adj.push((String::from(edge.1), edge.2));
+        let node_adj = self.adjacency_table.get_mut(edge.1).unwrap();
+        node_adj.push((String::from(edge.0), edge.2));
     }
 }
 pub trait Graph {
